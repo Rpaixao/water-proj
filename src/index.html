@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>water simulation - three.js & webgl</title>
+		<style>
+			body { margin: 0; }
+		</style>
+	</head>
+	<body>
+        <!-- IMPORT THREE -->
+		<script src="http://threejs.org/build/three.min.js"></script>
+		<script type="module">
+
+            /*
+             * Importing Water Component from three.js
+             */ 
+            import { Water } from 'https://unpkg.com/three/examples/jsm/objects/Water2.js';
+        
+			let scene, camera, renderer, water;
+
+			const params = {
+				color: '#0077be', // water color
+				scale: 4, // scale (size) of the water - you can play with this value and see the differece
+				flowX: 1,
+				flowY: 1
+			};
+
+			init();
+			animate();
+
+			function init() {
+
+				// scene - Creating the Scene
+				scene = new THREE.Scene();
+
+				// camera - Creating the prespective - User Point of View
+
+				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 100 );
+				camera.position.set( - 15, 7, 15 );
+				camera.lookAt( scene.position );
+
+				// water
+
+                // - Creating the Water Plane
+				const waterGeometry = new THREE.PlaneGeometry( 20, 20 ); // Defines the size
+
+                // Initializing the Water Component
+				water = new Water( waterGeometry, {
+					color: params.color,
+					scale: params.scale,
+					flowDirection: new THREE.Vector2( params.flowX, params.flowY ),
+					textureWidth: 1024,
+					textureHeight: 1024
+				} );
+
+				water.position.y = 1;
+				water.rotation.x = Math.PI * - 0.5;
+				scene.add( water );
+
+				// Background - We apply a background image
+                // You can find it on /src/public/textures
+
+				const cubeTextureLoader = new THREE.CubeTextureLoader();
+				cubeTextureLoader.setPath( 'textures/cube/Park2/' );
+
+				const cubeTexture = cubeTextureLoader.load( [
+					"posx.jpg", "negx.jpg",
+					"posy.jpg", "negy.jpg",
+					"posz.jpg", "negz.jpg"
+				] );
+
+				scene.background = cubeTexture;
+
+				// Now let's render everything
+
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				document.body.appendChild( renderer.domElement );
+                
+            }
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+				render();
+
+			}
+
+			function render() {
+
+				renderer.render( scene, camera );
+
+			}
+		</script>
+	</body>
+</html>
