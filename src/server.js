@@ -23,7 +23,7 @@ let handleRequest = (request, response) => {
         response.writeHead(200, {"Content-Type": "image/jpg"});
         fileStream.pipe(response);
     }else{
-        reresponses.writeHead(404, {"Content-Type": "text/html"});
+        response.writeHead(404, {"Content-Type": "text/html"});
         response.end("No Page Found");
     }
 };
